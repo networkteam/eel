@@ -1,0 +1,12 @@
+{
+  "name": "eel-js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "nearleyc -o src/grammar.cjs src/grammar.ne",
+    "test-grammar": "nearley-test src/grammar.js"
+  },
+  "dependencies": {
+    "nearley": "^2.16.0"
+  }
+}
