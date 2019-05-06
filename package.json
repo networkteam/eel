@@ -2,11 +2,16 @@
   "name": "eel-js",
   "license": "MIT",
   "type": "module",
+  "main": "src/main.js",
   "scripts": {
     "build": "nearleyc -o src/grammar.cjs src/grammar.ne",
-    "test-grammar": "nearley-test src/grammar.js"
+    "test-grammar": "nearley-test src/grammar.js",
+    "test": "mocha-esm test/test.*.js"
   },
   "dependencies": {
     "nearley": "^2.16.0"
+  },
+  "devDependencies": {
+    "mocha-esm": "^1.1.1"
   }
 }
