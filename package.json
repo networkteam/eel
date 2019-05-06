@@ -3,17 +3,24 @@
   "description": "Embedded expression language, a parser and compiler for a safe subset of JavaScript for dynamic evaluation in JavaScript.",
   "license": "MIT",
   "type": "module",
-  "main": "src/main.js",
+  "main": "dist/main.js",
   "scripts": {
-    "build": "nearleyc -o src/grammar.cjs src/grammar.ne",
+    "build": "npm run build:parser && npm run build:webpack",
+    "build:parser": "nearleyc -o src/grammar.cjs src/grammar.ne",
+    "build:webpack": "webpack",
     "test-grammar": "nearley-test src/grammar.js",
-    "test": "mocha-esm test/test.*.js"
+    "test": "mocha-esm test/*.spec.js"
   },
   "dependencies": {
     "nearley": "^2.16.0"
   },
   "devDependencies": {
-    "mocha-esm": "^1.1.1"
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "babel-loader": "^8.0.5",
+    "mocha-esm": "^1.1.1",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.2"
   },
   "version": "1.0.0"
 }
