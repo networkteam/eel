@@ -1,5 +1,6 @@
 {
-  "name": "eel-js",
+  "name": "@networkteam/eel",
+  "description": "Embedded expression language, a parser and compiler for a safe subset of JavaScript for dynamic evaluation in JavaScript.",
   "license": "MIT",
   "type": "module",
   "main": "src/main.js",
