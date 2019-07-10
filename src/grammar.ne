@@ -25,7 +25,7 @@ prodcalc -> prodcalc _ PROD_OP _ negation {% d => d[0] + d[2] + d[4] %}
 negation -> "!" _ negation {% d => '!' + d[2] %}
           | parens {% d => d[0] %}
 
-propaccessdot -> IDENTIFIER ("." IDENTIFIER):* {% d => ['ctx', d[0], ...d[1].map(dd => dd[1])].join('.') %}
+propaccessdot -> IDENTIFIER ("." IDENTIFIER):* {% d => d[1].length ? 'helper.getVal(ctx, "' + [d[0], ...d[1].map(dd => dd[1])].join('.') + '")' : 'ctx.' + d[0] %}
 
 atom -> propaccessdot {% d => d[0] %}
       | NUMBER {% d => d[0] %}

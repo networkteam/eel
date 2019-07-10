@@ -80,6 +80,12 @@ describe('compile', function() {
       const ctx = {myObj: {myProp: 'foo'}};
       assert.strictEqual(fn(ctx), ctx.myObj.myProp);
     });
+
+    it('should ignore undefined properties in path', function() {
+      const fn = compile('myObj.noKey.otherProp');
+      const ctx = {myObj: {myProp: 'foo'}};
+      assert.strictEqual(fn(ctx), undefined);
+    });
   });
 
   describe('boolean operators', function() {
