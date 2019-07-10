@@ -25,12 +25,14 @@ prodcalc -> prodcalc _ PROD_OP _ negation {% d => d[0] + d[2] + d[4] %}
 negation -> "!" _ negation {% d => '!' + d[2] %}
           | parens {% d => d[0] %}
 
-atom -> IDENTIFIER {% d => d[0] %}
+propaccessdot -> IDENTIFIER ("." IDENTIFIER):* {% d => ['ctx', d[0], ...d[1].map(dd => dd[1])].join('.') %}
+
+atom -> propaccessdot {% d => d[0] %}
       | NUMBER {% d => d[0] %}
       | dqstring  {% d => d[0] %}
       | sqstring  {% d => d[0] %}
 
-IDENTIFIER -> [a-zA-Z_] [a-zA-Z_0-9]:* {% d => 'ctx.' + d[0] + d[1].join('') %}
+IDENTIFIER -> [a-zA-Z_] [a-zA-Z_0-9]:* {% d => d[0] + d[1].join('') %}
 NUMBER -> "-":? [0-9]:+ {% d => parseInt((d[0] || '') + d[1].join(''), 10) %}
 
 COMPARISON_OP -> "==" {% d => d[0] %}

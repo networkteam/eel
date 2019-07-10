@@ -74,6 +74,14 @@ describe('compile', function() {
     });
   });
 
+  describe('property access', function() {
+    it('should parse and evaluate to property of variable in context', function() {
+      const fn = compile('myObj.myProp');
+      const ctx = {myObj: {myProp: 'foo'}};
+      assert.strictEqual(fn(ctx), ctx.myObj.myProp);
+    });
+  });
+
   describe('boolean operators', function() {
     describe('conjunction', function() {
       it('should parse and short circuit evaluate to operand', function() {
