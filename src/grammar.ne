@@ -27,7 +27,10 @@ negation -> "!" _ negation {% d => '!' + d[2] %}
 
 propaccessdot -> IDENTIFIER ("." IDENTIFIER):* {% d => d[1].length ? 'helper.getVal(ctx, "' + [d[0], ...d[1].map(dd => dd[1])].join('.') + '")' : 'ctx.' + d[0] %}
 
-atom -> propaccessdot {% d => d[0] %}
+functioncall -> IDENTIFIER _ "(" _ expression:? _ ("," _ expression):* _ ")" {% d => { return 'ctx.' + d[0] + '(' + (d[4] ? [d[4], ...d[6].map(dd => dd[2])].map(dd => dd[0]).join(',') : '') + ')' } %}
+
+atom -> functioncall {% d => d[0] %}
+      | propaccessdot {% d => d[0] %}
       | NUMBER {% d => d[0] %}
       | dqstring  {% d => d[0] %}
       | sqstring  {% d => d[0] %}

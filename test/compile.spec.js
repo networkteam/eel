@@ -183,6 +183,28 @@ describe('compile', function() {
         assert.strictEqual(fn({varA: 5, varB: 0}), true);
       });
     });
+
+    describe('function calls', function() {
+      it('should parse and evaluate', function() {
+        const fn = compile('myFunc(varA)');
+        assert.strictEqual(fn({myFunc: x => x * 2, varA: 21}), 42);
+      });
+
+      it('should allow whitespace after identifier', function() {
+        const fn = compile('myFunc (varA)');
+        assert.strictEqual(fn({myFunc: x => x * 2, varA: 21}), 42);
+      });
+
+      it('should support empty arguments', function() {
+        const fn = compile('myFunc()');
+        assert.strictEqual(fn({myFunc: () => 42}), 42);
+      });
+
+      it('should support multiple arguments', function() {
+        const fn = compile('myFunc(2, 3)');
+        assert.strictEqual(fn({myFunc: (x, y) => x * y}), 6);
+      });
+    });
   });
 });
 
