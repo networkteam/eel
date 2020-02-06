@@ -4,12 +4,15 @@ import grammar from './grammar.cjs';
 const grammarInstance = nearley.Grammar.fromCompiled(grammar);
 
 const helper = {
-  getVal(obj, path) {
-    return path.split('.').reduce((a, b) => a && a[b], obj);
+  val(prop) {
+    return obj => obj && obj[prop];
+  },
+  call(prop, args) {
+    return obj => obj && typeof obj[prop] === 'function' ? obj[prop].apply(this, args) : undefined;
   }
 };
 
-export default function compile(expression) {
+export function parse(expression) {
   const parser = new nearley.Parser(grammarInstance);
   parser.feed(expression);
 
@@ -17,7 +20,13 @@ export default function compile(expression) {
     throw new Error('empty expression');
   }
 
-  const js = `return ${parser.results[0]};`;
+  return parser.results[0][0];
+}
+
+export default function compile(expression) {
+  const code = parse(expression);
+
+  const js = `return ${code};`;
 
   const fn = new Function('helper', 'ctx', js);
 
