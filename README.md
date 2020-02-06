@@ -8,6 +8,9 @@
   * `!a || (b && c)`
   * `number == 42`
   * `foo.bar.baz`
+  * `foo["bar"].baz`
+  * `myFn(1, 2, 3)`
+  * `myObj.method(arg1).prop`
 * Compiles expressions from strings to plain JS functions
 * Safe to use with user generated expressions (e.g. as a filter language)
 * Use in the browser or with Node.js
