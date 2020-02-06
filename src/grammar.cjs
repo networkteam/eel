@@ -24,11 +24,36 @@ var grammar = {
     {"name": "prodcalc", "symbols": ["negation"], "postprocess": d => d[0]},
     {"name": "negation", "symbols": [{"literal":"!"}, "_", "negation"], "postprocess": d => '!' + d[2]},
     {"name": "negation", "symbols": ["parens"], "postprocess": d => d[0]},
-    {"name": "propaccessdot$ebnf$1", "symbols": []},
-    {"name": "propaccessdot$ebnf$1$subexpression$1", "symbols": [{"literal":"."}, "IDENTIFIER"]},
-    {"name": "propaccessdot$ebnf$1", "symbols": ["propaccessdot$ebnf$1", "propaccessdot$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "propaccessdot", "symbols": ["IDENTIFIER", "propaccessdot$ebnf$1"], "postprocess": d => d[1].length ? 'helper.getVal(ctx, "' + [d[0], ...d[1].map(dd => dd[1])].join('.') + '")' : 'ctx.' + d[0]},
-    {"name": "atom", "symbols": ["propaccessdot"], "postprocess": d => d[0]},
+    {"name": "offsetaccess", "symbols": [{"literal":"["}, "_", "expression", "_", {"literal":"]"}], "postprocess": d => 'helper.val(' + d[2] + ')'},
+    {"name": "methodcall$ebnf$1", "symbols": ["expression"], "postprocess": id},
+    {"name": "methodcall$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
+    {"name": "methodcall$ebnf$2", "symbols": []},
+    {"name": "methodcall$ebnf$2$subexpression$1", "symbols": [{"literal":","}, "_", "expression"]},
+    {"name": "methodcall$ebnf$2", "symbols": ["methodcall$ebnf$2", "methodcall$ebnf$2$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "methodcall", "symbols": ["IDENTIFIER", "_", {"literal":"("}, "_", "methodcall$ebnf$1", "_", "methodcall$ebnf$2", "_", {"literal":")"}], "postprocess": 
+        d => {
+          // TODO Quote method identifier
+          return 'helper.call("' + d[0] + '", [' + (d[4] ? [d[4], ...d[6].map(dd => dd[2])].map(dd => dd[0]).join(',') : '') + '])'
+        }
+        },
+    {"name": "objectpath$ebnf$1", "symbols": []},
+    {"name": "objectpath$ebnf$1$subexpression$1", "symbols": ["nested_methodcall_or_identifier"]},
+    {"name": "objectpath$ebnf$1$subexpression$1", "symbols": ["offsetaccess"]},
+    {"name": "objectpath$ebnf$1", "symbols": ["objectpath$ebnf$1", "objectpath$ebnf$1$subexpression$1"], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "objectpath", "symbols": ["methodcall_or_identifier", "objectpath$ebnf$1"], "postprocess": 
+        d => {
+          let s = d[0] + "(ctx)";
+          for (const part of d[1]) {
+              s = part[0] + "(" + s + ")";
+          }
+          return s;
+        }
+        },
+    {"name": "nested_methodcall_or_identifier", "symbols": [{"literal":"."}, "methodcall_or_identifier"], "postprocess": d => d[1]},
+    {"name": "methodcall_or_identifier", "symbols": ["methodcall"], "postprocess": d => d[0]},
+    {"name": "methodcall_or_identifier", "symbols": ["identifier"], "postprocess": d => d[0]},
+    {"name": "identifier", "symbols": ["IDENTIFIER"], "postprocess": d => 'helper.val("' + d[0] + '")'},
+    {"name": "atom", "symbols": ["objectpath"], "postprocess": d => d[0]},
     {"name": "atom", "symbols": ["NUMBER"], "postprocess": d => d[0]},
     {"name": "atom", "symbols": ["dqstring"], "postprocess": d => d[0]},
     {"name": "atom", "symbols": ["sqstring"], "postprocess": d => d[0]},
@@ -39,7 +64,7 @@ var grammar = {
     {"name": "NUMBER$ebnf$1", "symbols": [], "postprocess": function(d) {return null;}},
     {"name": "NUMBER$ebnf$2", "symbols": [/[0-9]/]},
     {"name": "NUMBER$ebnf$2", "symbols": ["NUMBER$ebnf$2", /[0-9]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
-    {"name": "NUMBER", "symbols": ["NUMBER$ebnf$1", "NUMBER$ebnf$2"], "postprocess": d => parseInt((d[0] || '') + d[1].join(''), 10)},
+    {"name": "NUMBER", "symbols": ["NUMBER$ebnf$1", "NUMBER$ebnf$2"], "postprocess": d => (d[0] || '') + d[1].join('')},
     {"name": "COMPARISON_OP$string$1", "symbols": [{"literal":"="}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "COMPARISON_OP", "symbols": ["COMPARISON_OP$string$1"], "postprocess": d => d[0]},
     {"name": "COMPARISON_OP$string$2", "symbols": [{"literal":"!"}, {"literal":"="}], "postprocess": function joiner(d) {return d.join('');}},
