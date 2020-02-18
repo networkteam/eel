@@ -20,7 +20,7 @@ export function parse(expression) {
     throw new Error('empty expression');
   }
 
-  return parser.results[0][0];
+  return parser.results[0];
 }
 
 export default function compile(expression) {

@@ -1,8 +1,8 @@
 expression -> conditional {% d => d[0] %}
 
 # TODO Check if associativness of ternary is correct
-conditional -> disjunction _ "?" _ expression _ ":" _ expression  {% d => d[0] + "?" + d[4] + ":" + d[8] %}
-             | disjunction
+conditional -> disjunction _ "?" _ expression _ ":" _ expression {% d => d[0] + "?" + d[4] + ":" + d[8] %}
+             | disjunction {% d => d[0] %}
 
 parens -> "(" _ expression _ ")" {% d => '(' + d[2] + ')' %}
         | atom {% d => d[0] %}
@@ -31,7 +31,7 @@ offsetaccess -> "[" _ expression _ "]" {% d => 'helper.val(' + d[2] + ')' %}
 methodcall -> IDENTIFIER _ "(" _ expression:? _ ("," _ expression):* _ ")" {%
   d => {
     // TODO Quote method identifier
-    return 'helper.call("' + d[0] + '", [' + (d[4] ? [d[4], ...d[6].map(dd => dd[2])].map(dd => dd[0]).join(',') : '') + '])'
+    return 'helper.call("' + d[0] + '", [' + (d[4] ? [d[4], ...d[6].map(dd => dd[2])].join(',') : '') + '])'
   }
 %}
 
