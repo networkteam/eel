@@ -90,7 +90,7 @@ var grammar = {
     {"name": "sqstring", "symbols": [{"literal":"'"}, "sqstring$ebnf$1", {"literal":"'"}], "postprocess": d => "'" + d[1].join('') + "'"},
     {"name": "sstrchar", "symbols": [/[^\\'\n]/], "postprocess": id},
     {"name": "sstrchar", "symbols": [{"literal":"\\"}, "strescape"], "postprocess": d => d.join('')},
-    {"name": "strescape", "symbols": [/["'\\\/bfnrt]/], "postprocess": id},
+    {"name": "strescape", "symbols": [/["'\\/bfnrt]/], "postprocess": id},
     {"name": "strescape", "symbols": [{"literal":"u"}, /[a-fA-F0-9]/, /[a-fA-F0-9]/, /[a-fA-F0-9]/, /[a-fA-F0-9]/], "postprocess": d => d.join('')},
     {"name": "_$ebnf$1", "symbols": []},
     {"name": "_$ebnf$1", "symbols": ["_$ebnf$1", /[\s]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
