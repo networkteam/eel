@@ -1,11 +1,11 @@
-import path from "path";
+const path = require('path');
 
 const config = {
   target: 'node',
   mode: 'production',
   entry: './src/main.js',
   output: {
-    path: path.resolve('./dist'),
+    path: path.resolve(__dirname, 'dist'),
     library: 'networkteamEel',
     libraryTarget: 'umd'
   },
@@ -25,4 +25,4 @@ const config = {
   }
 };
 
-export default config;
+module.exports = config;
