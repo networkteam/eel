@@ -309,4 +309,3 @@ describe('eel', function() {
     });
   });
 });
-
