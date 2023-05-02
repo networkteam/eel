@@ -7,7 +7,7 @@ var grammar = {
     ParserRules: [
     {"name": "expression", "symbols": ["conditional"], "postprocess": d => d[0]},
     {"name": "conditional", "symbols": ["disjunction", "_", {"literal":"?"}, "_", "expression", "_", {"literal":":"}, "_", "expression"], "postprocess": d => d[0] + "?" + d[4] + ":" + d[8]},
-    {"name": "conditional", "symbols": ["disjunction"]},
+    {"name": "conditional", "symbols": ["disjunction"], "postprocess": d => d[0]},
     {"name": "parens", "symbols": [{"literal":"("}, "_", "expression", "_", {"literal":")"}], "postprocess": d => '(' + d[2] + ')'},
     {"name": "parens", "symbols": ["atom"], "postprocess": d => d[0]},
     {"name": "disjunction$string$1", "symbols": [{"literal":"|"}, {"literal":"|"}], "postprocess": function joiner(d) {return d.join('');}},
@@ -33,7 +33,7 @@ var grammar = {
     {"name": "methodcall", "symbols": ["IDENTIFIER", "_", {"literal":"("}, "_", "methodcall$ebnf$1", "_", "methodcall$ebnf$2", "_", {"literal":")"}], "postprocess": 
         d => {
           // TODO Quote method identifier
-          return 'helper.call("' + d[0] + '", [' + (d[4] ? [d[4], ...d[6].map(dd => dd[2])].map(dd => dd[0]).join(',') : '') + '])'
+          return 'helper.call("' + d[0] + '", [' + (d[4] ? [d[4], ...d[6].map(dd => dd[2])].join(',') : '') + '])'
         }
         },
     {"name": "objectpath$ebnf$1", "symbols": []},

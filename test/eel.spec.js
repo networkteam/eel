@@ -244,6 +244,20 @@ describe('eel', function() {
     });
   });
 
+  describe('conditionals', function() {
+    it('should be parsed to helper call', function() {
+      const code = parse('x > 1 ? (x - 1) : 0');
+      assert.strictEqual(code, `helper.val("x")(ctx)>1?(helper.val("x")(ctx)-1):0`);
+    });
+
+    it('should evaluate conditional', function() {
+      const fn = compile('x > 1 ? (x - 1) * 2 : 0');
+      assert.strictEqual(fn({x: 42}), 82);
+      assert.strictEqual(fn({x: 0}), 0);
+      assert.strictEqual(fn({}), 0);
+    });
+  });
+
   describe('function calls', function() {
     it('should be parsed to helper call', function() {
       const code = parse('myFunc(varA)');
